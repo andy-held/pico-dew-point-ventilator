@@ -1,3 +1,7 @@
+include(${PIMORONI_PICO_PATH}/common/pimoroni_i2c.cmake)
+include(${PIMORONI_PICO_PATH}/common/pimoroni_bus.cmake)
+include(${PIMORONI_PICO_PATH}/drivers/bme280/bme280.cmake)
+
 add_executable(picodew main.cpp bme280.c)
 target_link_libraries(
   picodew

@@ -1,5 +1,10 @@
 cmake_minimum_required(VERSION 3.16...3.23)
 
+if($ENV{PIMORONI_PICO_PATH})
+    set(PIMORONI_PICO_PATH $ENV{PIMORONI_PICO_PATH})
+endif()
+include(${PIMORONI_PICO_PATH}/pimoroni_pico_import.cmake)
+
 # initialize pico-sdk from submodule
 # note: this must happen before project()
 if($ENV{PICO_SDK_DIR})
@@ -36,7 +41,7 @@ project(
   VERSION 0.0.1
   DESCRIPTION ""
   HOMEPAGE_URL "%%myurl%%"
-  LANGUAGES CXX C)
+  LANGUAGES CXX C ASM)
 
 pico_sdk_init()
 

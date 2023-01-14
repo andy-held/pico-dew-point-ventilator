@@ -31,6 +31,10 @@
                 "microsoft.com/VisualStudioRemoteSettings/CMake/1.0": {
                     "sourceDir": "$env{HOME}/.vs/$ms{projectDirName}"
                 }
+            },
+            "cacheVariables": {
+                "PIMORONI_PICO_PATH": "/home/andreas/dev/pico-dew-point-ventilator/pimoroni-pico/",
+                "PICO_SDK_DIR": "/home/andreas/dev/pico-sdk/"
             }
         },
         {
