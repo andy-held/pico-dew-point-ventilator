@@ -33,8 +33,8 @@
                 }
             },
             "cacheVariables": {
-                "PIMORONI_PICO_PATH": "/home/andreas/dev/pico-dew-point-ventilator/pimoroni-pico/",
-                "PICO_SDK_DIR": "/home/andreas/dev/pico-sdk/"
+                "PICO_PLATFORM": "rp2040",
+                "PICO_COMPILER": "pico_arm_gcc"
             }
         },
         {

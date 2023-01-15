@@ -1,11 +1,19 @@
-include(${PIMORONI_PICO_PATH}/common/pimoroni_i2c.cmake)
-include(${PIMORONI_PICO_PATH}/common/pimoroni_bus.cmake)
-include(${PIMORONI_PICO_PATH}/drivers/bme280/bme280.cmake)
+add_executable(picodew
+  main.cpp
+  bme280.c
+  bme280.cpp
+  pimoroni_i2c.cpp)
 
-add_executable(picodew main.cpp bme280.c)
 target_link_libraries(
   picodew
-  PUBLIC project_options project_warnings
-  pico_stdlib)
+  PUBLIC
+  pico_stdlib
+  hardware_i2c
+  project_options
+  project_warnings)
+
+target_compile_definitions(picodew INTERFACE
+  BME280_FLOAT_ENABLE
+)
 
 pico_add_extra_outputs(picodew)

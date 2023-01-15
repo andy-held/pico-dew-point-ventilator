@@ -1,10 +1,5 @@
 cmake_minimum_required(VERSION 3.16...3.23)
 
-if($ENV{PIMORONI_PICO_PATH})
-    set(PIMORONI_PICO_PATH $ENV{PIMORONI_PICO_PATH})
-endif()
-include(${PIMORONI_PICO_PATH}/pimoroni_pico_import.cmake)
-
 # initialize pico-sdk from submodule
 # note: this must happen before project()
 if($ENV{PICO_SDK_DIR})
@@ -21,6 +16,7 @@ set(CMAKE_C_STANDARD 17)
 # -Wpedantic being enabled and -std=c++20 and -std=gnu++20 for example
 # when compiling with PCH enabled
 set(CMAKE_CXX_EXTENSIONS OFF)
+set(CMAKE_C_EXTENSIONS ON)
 
 # Note: by default ENABLE_DEVELOPER_MODE is True
 # This means that all analysis (sanitizers, static analysis)
@@ -40,7 +36,6 @@ project(
   picodew
   VERSION 0.0.1
   DESCRIPTION ""
-  HOMEPAGE_URL "%%myurl%%"
   LANGUAGES CXX C ASM)
 
 pico_sdk_init()
@@ -73,6 +68,22 @@ project_options(
   PCH_HEADERS
   <vector>
   <string> # This is a list of headers to pre-compile, here are some common ones
+  GCC_WARNINGS
+  -fdata-sections
+  -fno-exceptions
+  -Wall
+  -Wextra
+  -Wpedantic
+  -Wformat-security
+  -Wno-format-zero-length
+  -Werror=format-security
+  -Wdouble-promotion
+  -Wpointer-arith
+  -Wnull-dereference
+  -Wredundant-decls
+  -Wshadow
+  -Wswitch-default
+  -Wcast-align
 )
 
 add_library(picodew::project_options INTERFACE IMPORTED)
