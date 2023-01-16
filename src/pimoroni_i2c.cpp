@@ -1,6 +1,9 @@
 #include "pimoroni_common.hpp"
 #include "pimoroni_i2c.hpp"
 
+#include <vector>
+#include <algorithm>
+
 namespace pimoroni {
     void I2C::init() {
         i2c = pin_to_inst(sda);
@@ -69,19 +72,18 @@ namespace pimoroni {
     }
 
     int I2C::write_bytes(uint8_t address, uint8_t reg, const uint8_t *buf, int len) {
-        uint8_t buffer[len + 1];
+        std::vector<uint8_t> buffer(len+1);
+        std::copy(buf, buf+len, ++buffer.begin());
+
         buffer[0] = reg;
-        for(int x = 0; x < len; x++) {
-            buffer[x + 1] = buf[x];
-        }
-        return i2c_write_blocking(i2c, address, buffer, len + 1, false);
-    };
+        return i2c_write_blocking(i2c, address, buffer.data(), len + 1, false);
+    }
 
     int I2C::read_bytes(uint8_t address, uint8_t reg, uint8_t *buf, int len) {
         i2c_write_blocking(i2c, address, &reg, 1, true);
         i2c_read_blocking(i2c, address, buf, len, false);
         return len;
-    };
+    }
 
     uint8_t I2C::get_bits(uint8_t address, uint8_t reg, uint8_t shift, uint8_t mask) {
         uint8_t value;

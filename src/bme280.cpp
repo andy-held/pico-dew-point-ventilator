@@ -1,8 +1,33 @@
 #include "bme280.hpp"
 #include "pico/stdlib.h"
 
+
 namespace pimoroni
 {
+namespace
+{
+// Bindings for bme280_dev
+int8_t write_bytes(uint8_t reg_addr, uint8_t *reg_data, uint32_t length, void *intf_ptr)
+{
+    auto [i2c, address] = *(std::tuple<I2C *, int8_t> *)intf_ptr;
+
+    int result = i2c->write_bytes(address, reg_addr, reg_data, length);
+
+    return result == PICO_ERROR_GENERIC ? BME280_E_COMM_FAIL : BME280_OK;
+}
+
+int8_t read_bytes(uint8_t reg_addr, uint8_t *reg_data, uint32_t length, void *intf_ptr)
+{
+    auto [i2c, address] = *(std::tuple<I2C *, int8_t> *)intf_ptr;
+
+    auto result = i2c->read_bytes(address, reg_addr, reg_data, length);
+
+    return result == PICO_ERROR_GENERIC ? BME280_E_COMM_FAIL : BME280_OK;
+}
+
+void delay_us(uint32_t period, void * /*intf_ptr*/) { sleep_us(period); }
+}// namespace
+
 bool BME280::init()
 {
     int8_t result;
@@ -14,7 +39,9 @@ bool BME280::init()
         gpio_pull_up(interrupt);
     }
 
-    device.intf_ptr = new i2c_intf_ptr{ .i2c = i2c, .address = address };
+    callback_data = { i2c, address };
+
+    device.intf_ptr = &callback_data;
     device.intf = bme280_intf::BME280_I2C_INTF;
     device.read = (bme280_read_fptr_t)&read_bytes;
     device.write = (bme280_write_fptr_t)&write_bytes;
@@ -70,7 +97,7 @@ BME280::bme280_reading BME280::read_forced()
     device.delay_us(req_delay, device.intf_ptr);
 
     bme280_data data;
-    reading.status = bme280_get_sensor_data(BME280_ALL, &data, &device) == BME280_OK;
+    reading.status = bme280_get_sensor_data(BME280_ALL, &data, &device);
     reading.temperature = data.temperature;
     reading.pressure = data.pressure;
     reading.humidity = data.humidity;
@@ -81,14 +108,10 @@ BME280::bme280_reading BME280::read()
 {
     bme280_reading reading;
     bme280_data data;
-    reading.status = bme280_get_sensor_data(BME280_ALL, &data, &device) == BME280_OK;
+    reading.status = bme280_get_sensor_data(BME280_ALL, &data, &device);
     reading.temperature = data.temperature;
     reading.pressure = data.pressure;
     reading.humidity = data.humidity;
     return reading;
 }
-
-I2C *BME280::get_i2c() const { return i2c; }
-
-int BME280::get_int() const { return interrupt; }
 }// namespace pimoroni

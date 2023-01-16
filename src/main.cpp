@@ -91,11 +91,26 @@ float taupunkt(float temperatur, float relative_humidity)
 
 using namespace pimoroni;
 
+void print_reading(const BME280::bme280_reading& reading)
+{
+    printf("%02d %0.2lf deg C, %0.2lf hPa, %0.2lf%%\n",
+        reading.status,
+        static_cast<double>(reading.temperature),
+        static_cast<double>(reading.pressure),
+        static_cast<double>(reading.humidity));
+
+    const auto abs_lftf = absolute_luftfeuchtigkeit_aus_temp_und_rel(reading.temperature, reading.humidity/100.f);
+    printf("Absolute Luftfeuchtigkeit: %0.4lf kg/cm³\n", static_cast<double>(abs_lftf));
+}
+
 // NOLINTNEXTLINE(bugprone-exception-escape)
 int main(int /*argc*/, const char ** /*argv*/)
 {
-    I2C i2c(BOARD::PICO_EXPLORER);
+    I2C i2c(I2C_DEFAULT_SDA, I2C_HEADER_SCL);
     BME280 bme280(&i2c);
+
+    I2C i2c2(18, 19);
+    BME280 bme280_2(&i2c2);
 
     gpio_init(PICO_DEFAULT_LED_PIN);
     gpio_set_dir(PICO_DEFAULT_LED_PIN, GPIO_OUT);
@@ -103,18 +118,16 @@ int main(int /*argc*/, const char ** /*argv*/)
     stdio_init_all();
 
     if (!bme280.init()) { printf("Failed to init bme280!\n"); }
+    if (!bme280_2.init()) { printf("Failed to init second bme280!\n"); }
 
     while (true)
     {
-        BME280::bme280_reading result = bme280.read_forced();
-        printf("%s %0.2lf deg C, %0.2lf hPa, %0.2lf%%\n",
-            result.status == BME280_OK ? "OK" : "ER",
-            result.temperature,
-            result.pressure,
-            result.humidity);
+        printf("First sensor:\n");
+        print_reading(bme280.read_forced());
 
-        const auto abs_lftf = absolute_luftfeuchtigkeit_aus_temp_und_rel(result.temperature, result.humidity/100.f);
-        printf("Absolute Luftfeuchtigkeit: %0.4lf kg/cm³\n", abs_lftf);
+        printf("Second sensor:\n");
+        print_reading(bme280_2.read_forced());
+
         sleep_ms(1000);
     }
 

@@ -16,37 +16,8 @@ namespace pimoroni {
         uint32_t baudrate = I2C_DEFAULT_BAUDRATE;
 
       public:
-        I2C(BOARD board, uint32_t baudrate = I2C_DEFAULT_BAUDRATE) : baudrate(baudrate) {
-          switch(board) {
-            case BREAKOUT_GARDEN:
-              sda = I2C_BG_SDA;
-              scl = I2C_BG_SCL;
-              interrupt = I2C_BG_INT;
-              break;
-            case PICO_EXPLORER:
-            default:
-              sda = I2C_DEFAULT_SDA;
-              scl = I2C_DEFAULT_SCL;
-              interrupt = I2C_DEFAULT_INT;
-              break;
-            case PLASMA_STICK:
-              sda = I2C_BG_SDA;
-              scl = I2C_BG_SCL;
-              interrupt = PIN_UNUSED;
-              break;
-            case PLASMA_2040:
-            case INTERSTATE_75:
-            case SERVO_2040:
-            case MOTOR_2040:
-              sda = I2C_HEADER_SDA;
-              scl = I2C_HEADER_SCL;
-              interrupt = I2C_HEADER_INT;
-              break;
-          }
-          init();
-        }
 
-        I2C(uint sda, uint scl, uint32_t baudrate = I2C_DEFAULT_BAUDRATE) : sda(sda), scl(scl), baudrate(baudrate) {
+        I2C(uint sda_in, uint scl_in, uint32_t baudrate_in = I2C_DEFAULT_BAUDRATE) : sda(sda_in), scl(scl_in), baudrate(baudrate_in) {
           init();
         }
 
