@@ -2,7 +2,8 @@ add_executable(picodew
   main.cpp
   bme280.c
   bme280.cpp
-  pimoroni_i2c.cpp)
+  pimoroni_i2c.cpp
+  physics.cpp)
 
 target_link_libraries(
   picodew
