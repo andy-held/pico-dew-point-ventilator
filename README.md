@@ -6,3 +6,14 @@ This project uses the [RP2040](https://www.raspberrypi.com/products/raspberry-pi
 
 - [Pico SDK](https://github.com/raspberrypi/pico-sdk)
 - [Bosch BME280](https://github.com/BoschSensortec/BME280_driver)
+
+
+## Building
+
+Clone this repository and initialize the Bosch submodule:
+
+```bash
+git clone --recurse-submodules https://github.com/andy-held/pico-dew-point-ventilator.git
+```
+
+Execute CMake & build.

@@ -1,0 +1,3 @@
+[submodule "src/3rdparty/BME280_driver"]
+	path = src/3rdparty/BME280_driver
+	url = https://github.com/boschsensortec/BME280_driver.git
