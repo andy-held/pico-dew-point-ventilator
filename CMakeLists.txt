@@ -2,10 +2,10 @@ cmake_minimum_required(VERSION 3.16...3.23)
 
 # initialize pico-sdk from submodule
 # note: this must happen before project()
-if($ENV{PICO_SDK_DIR})
-    set(PICO_SDK_DIR $ENV{PICO_SDK_DIR})
+if(DEFINED ENV{PICO_SDK_PATH})
+    set(PICO_SDK_PATH $ENV{PICO_SDK_PATH})
 endif()
-include(${PICO_SDK_DIR}/pico_sdk_init.cmake)
+include(${PICO_SDK_PATH}/pico_sdk_init.cmake)
 
 # Not ideal to use this global variable, but necessary to make sure
 # that tooling and projects use the same version
@@ -39,6 +39,7 @@ project(
   DESCRIPTION ""
   LANGUAGES CXX C ASM)
 
+set(PICO_CXX_ENABLE_EXCEPTIONS ON)
 pico_sdk_init()
 
 set(GIT_SHA "Unknown" CACHE STRING "SHA this build was generated from")
@@ -71,7 +72,6 @@ project_options(
   <string> # This is a list of headers to pre-compile, here are some common ones
   GCC_WARNINGS
   -fdata-sections
-  -fno-exceptions
   -Wall
   -Wextra
   -Wpedantic
